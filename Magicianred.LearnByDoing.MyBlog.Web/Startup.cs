@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Magicianred.LearnByDoing.MyBlog.BL.Services;
 using Magicianred.LearnByDoing.MyBlog.DAL.Repositories;
 using Magicianred.LearnByDoing.MyBlog.Domain.Interfaces.Models;
@@ -10,7 +6,6 @@ using Magicianred.LearnByDoing.MyBlog.Domain.Interfaces.Services;
 using Magicianred.LearnByDoing.MyBlog.Domain.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,6 +30,9 @@ namespace Magicianred.LearnByDoing.MyBlog.Web
             services.AddScoped<IDatabaseConnectionFactory, DatabaseConnectionFactory>();
             services.AddScoped<IPostsRepository, PostsRepository>();
             services.AddScoped<IPostsService, PostsService>();
+            services.AddScoped<ICategory, Category>();
+            services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+            services.AddScoped<ICategoriesService, CategoriesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

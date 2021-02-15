@@ -1,0 +1,42 @@
+﻿@model Magicianred.LearnByDoing.MyBlog.Domain.Models.Category
+@using Magicianred.LearnByDoing.MyBlog.Domain.Models
+@{
+    ViewData["Title"] = "Home Page";
+    var posts = new List<Post>();
+    int x = 0;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Blog category</h1>
+    <p>Learn more <a href="@Url.Action("About", "Home")">about this project</a>.</p>
+    @if (@Model != null)
+    {
+<article class="category-details category-id-@(Model.Id)">
+    <h2>@Model.Name</h2>
+    <p>@Model.Description</p>
+    <p>@Model.Posts[Model.Id].</p>
+    @{
+        //posts = Model.Posts.ToList();
+        x = Model.Posts.Count();
+    }
+</article>
+        }
+        else
+        {
+        <article>
+            <p>Category Not Found</p>
+        </article>
+    }
+    <div class="post-list">
+        @for(int i = 0; i < x; i++)
+        {
+            <div class="post-item post-id-@(Model.Posts[i].Id)">
+                <h2><a href="@Url.Action("Post", "Home", new { Id = Model.Posts[i].Id })">@Model.Posts[i].Title</a></h2>
+                <p>@Model.Posts[i].Text</p>
+            </div>
+        }
+    </div>
+    <p>
+        <a href="@Url.Action("Index", "Home")">Return to Home</a>
+    </p>
+</div>
