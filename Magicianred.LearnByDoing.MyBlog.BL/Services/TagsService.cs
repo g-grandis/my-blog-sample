@@ -10,23 +10,26 @@ using System.Text;
 
 namespace Magicianred.LearnByDoing.MyBlog.BL.Services
 {
-    public class CategoriesService : ICategoriesService
+    public class TagsService : ITagsService
     {
-        private ICategoriesRepository _categoriesRepository;
+        private ITagsRepository _tagsRepository;
 
-        public CategoriesService(ICategoriesRepository categoriesRepository)
+
+        public TagsService(ITagsRepository tagsRepository)
         {
-            _categoriesRepository = categoriesRepository;
+            _tagsRepository = tagsRepository;
         }
 
-        public List<Category> GetAll()
+        public List<Tag> GetAll()
         {
-            return _categoriesRepository.GetAll().ToList();
+            return _tagsRepository.GetAll().ToList();
         }
 
-        public Category GetById(int id)
+
+        public Tag GetById(int id)
         {
-            return _categoriesRepository.GetById(id);
+            return _tagsRepository.GetById(id);
         }
+
     }
 }

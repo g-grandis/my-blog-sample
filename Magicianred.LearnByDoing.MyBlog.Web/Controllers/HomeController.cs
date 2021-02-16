@@ -55,6 +55,7 @@ namespace Magicianred.LearnByDoing.MyBlog.Web.Controllers
             var post = _postsService.GetById(id);
             return View(post);
         }
+        
         public IActionResult Categories()
         {
             var categories = _categoriesService.GetAll();

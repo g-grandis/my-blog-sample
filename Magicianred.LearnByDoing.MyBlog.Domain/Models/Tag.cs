@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Magicianred.LearnByDoing.MyBlog.Domain.Models
 {
-    public partial class Post : IPost
+    public partial class Tag : ITag
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public int CategoryId { get; set; }
-        public List<Tag> Tags { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public List<Post> Posts { get; set; }
+
     }
 }
