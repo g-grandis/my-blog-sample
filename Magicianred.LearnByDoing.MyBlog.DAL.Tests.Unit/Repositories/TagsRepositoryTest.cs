@@ -12,9 +12,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
     [TestFixture]
     public class TagsRepositoryTest
     {
-        /// <summary>
-        /// PostsService is our System Under Test
-        /// </summary>
+
         private TagsRepository _sut;
 
         private IDatabaseConnectionFactory _connectionFactory;
@@ -33,7 +31,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
         [OneTimeTearDown]
         public void TearDownOneTime()
         {
-            // dispose
+             //dispose
             //_tagsRepository = null;
         }
 
@@ -45,12 +43,11 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
         {
             // Arrange
             var mockTags = TagsHelper.GetDefaultMockData();
-            var mockPosts = PostsHelper.GetDefaultMockData();
-            var mockPostTags = PostTagsHelper.GetDefaultMockData();
             var db = new InMemoryDatabase();
             db.Insert<Tag>(mockTags);
-            db.Insert<Post>(mockPosts);
-            db.Insert<PostTag>(mockPostTags);
+            _connectionFactory.GetConnection().Returns(db.OpenConnection());
+
+
 
             // Act
             var tags = _sut.GetAll();

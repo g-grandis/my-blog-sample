@@ -13,12 +13,14 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Helpers
             mockPostTags.Add(new PostTag()
             {
                 PostId = 1,
-                TagId = 2
+                TagId = 1,
+                CreateDate = new DateTime(2021,02,17)
             });
             mockPostTags.Add(new PostTag()
             {
-                PostId = 3,
-                TagId = 1
+                PostId = 2,
+                TagId = 2,
+                CreateDate = new DateTime(2021, 02, 18)
             });
 
             return mockPostTags;

@@ -8,6 +8,6 @@ namespace Magicianred.LearnByDoing.MyBlog.Domain.Interfaces.Repositories
     public interface ITagsRepository
     {
         public IEnumerable<Tag> GetAll();
-        Tag GetById(int id);
+        public Tag GetById(int id);
     }
 }
