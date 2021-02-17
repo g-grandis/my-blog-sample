@@ -52,6 +52,9 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
             db.Insert<Post>(mockPosts);
             db.Insert<PostTag>(mockPostTags);
 
+            _connectionFactory.GetConnection().Returns(db.OpenConnection());
+
+
             // Act
             var posts = _sut.GetAll();
             var postsList = posts.ToList();
@@ -87,6 +90,9 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
             db.Insert<Post>(mockPosts);
             db.Insert<PostTag>(mockPostTags);
 
+            _connectionFactory.GetConnection().Returns(db.OpenConnection());
+
+
             var mockPost = mockPosts.Where(x => x.Id == id).FirstOrDefault();
 
             // Act
@@ -110,23 +116,30 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
             var mockTags = TagsHelper.GetDefaultMockData();
             var mockPosts = PostsHelper.GetDefaultMockData();
             var mockPostTags = PostTagsHelper.GetDefaultMockData();
+            var mockPostsWithTags = PostsHelper.GetMockDataWithTags(mockTags);
             var db = new InMemoryDatabase();
+            var db2 = new InMemoryDatabase();
             db.Insert<Tag>(mockTags);
             db.Insert<Post>(mockPosts);
             db.Insert<PostTag>(mockPostTags);
+            db2.Insert<Post>(mockPostsWithTags);
+
+            _connectionFactory.GetConnection().Returns(db.OpenConnection());
+
 
             var mockPost = mockPosts.Where(x => x.Id == id).FirstOrDefault();
+            var mockPostWithTag = mockPostsWithTags.Where(x => x.Id == id).FirstOrDefault();
 
             // Act
             var post = _sut.GetById(id);
-
+            var postWTag = _sut.GetById(id);
             // Assert
             Assert.IsNotNull(post);
 
             Assert.IsTrue(mockPost.Id == post.Id);
             Assert.IsTrue(mockPost.Title == post.Title);
             Assert.IsTrue(mockPost.Text == post.Text);
-            Assert.IsTrue(mockPost.Tags == post.Tags);
+            Assert.IsTrue(mockPostWithTag.Tags.Count == postWTag.Tags.Count);
 
         }
 
