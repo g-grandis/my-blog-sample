@@ -35,7 +35,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
             IEnumerable<Post> posts = null;
             using (var connection = _connectionFactory.GetConnection())
             {
-                posts = connection.Query<Post>("SELECT Id, Title, Text FROM Posts ORDER BY CreateDate DESC");
+                posts = connection.Query<Post>("SELECT Id, Title, Text, Author FROM Posts ORDER BY CreateDate DESC");
             }
             return posts;
         }
@@ -51,13 +51,24 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
             using (var connection = _connectionFactory.GetConnection())
             {
                 // TOP 1 is not a command for SQLite, remove
-                post = connection.QueryFirstOrDefault<Post>("SELECT * FROM posts WHERE Id = @PostId", new { PostId = id });
+                post = connection.QueryFirstOrDefault<Post>("SELECT Id, Title, Text, Author, CategoryId FROM Posts WHERE Id = @PostId", new { PostId = id });
                 if (post != null)
                 {
                     post.Tags = connection.Query<Tag>("SELECT c.Id, c.Name, c.Description FROM posts a INNER JOIN posttags b on a.Id = b.PostId INNER JOIN tags c on b.TagId = c.Id WHERE a.Id = @PostId", new { PostId = id }).AsList<Tag>();
                 }
             }
             return post;
+        }
+        public IEnumerable<Post> GetAllByAuthor(string author)
+        {
+            IEnumerable<Post> posts = null;
+            using (var connection = _connectionFactory.GetConnection())
+            {
+                // TOP 1 is not a command for SQLite, remove
+                posts = connection.Query<Post>("SELECT Id, Title, Text, Author FROM posts WHERE Author = @Author", new { Author = author });
+                
+            }
+            return posts;
         }
     }
 }

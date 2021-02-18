@@ -4,8 +4,10 @@ using Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Models;
 using Magicianred.LearnByDoing.MyBlog.Domain.Interfaces.Repositories;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
 {
@@ -76,13 +78,16 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
         public void should_retrieve_tag_by_id(int id)
         {
             // Arrange
-            var mockTags = TagsHelper.GetDefaultMockData();
             var mockPosts = PostsHelper.GetDefaultMockData();
+            var mockTags = TagsHelper.GetMockDataWithPosts(mockPosts);
             var mockPostTags = PostTagsHelper.GetDefaultMockData();
             var db = new InMemoryDatabase();
             db.Insert<Tag>(mockTags);
             db.Insert<Post>(mockPosts);
             db.Insert<PostTag>(mockPostTags);
+
+            _connectionFactory.GetConnection().Returns(db.OpenConnection());
+
 
             var mockTag = mockTags.Where(x => x.Id == id).FirstOrDefault();
 
@@ -104,13 +109,15 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
         public void should_retrieve_tag_by_id_with_post(int id)
         {
             // Arrange
-            var mockTags = TagsHelper.GetDefaultMockData();
+            
             var mockPosts = PostsHelper.GetDefaultMockData();
+            var mockTags = TagsHelper.GetMockDataWithPosts(mockPosts);
             var mockPostTags = PostTagsHelper.GetDefaultMockData();
             var db = new InMemoryDatabase();
             db.Insert<Tag>(mockTags);
             db.Insert<Post>(mockPosts);
             db.Insert<PostTag>(mockPostTags);
+            _connectionFactory.GetConnection().Returns(db.OpenConnection());
 
             var mockTag = mockTags.Where(x => x.Id == id).FirstOrDefault();
 
@@ -123,7 +130,14 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
             Assert.IsTrue(mockTag.Id == tag.Id);
             Assert.IsTrue(mockTag.Name == tag.Name);
             Assert.IsTrue(mockTag.Description == tag.Description);
-            Assert.IsTrue(mockTag.Posts == tag.Posts);
+            Assert.IsNotNull(tag.Posts);
+            Assert.IsTrue(tag.Posts.Count() == 1);
+            for (int i = 0; i < tag.Posts.Count; i++)
+            {
+                Assert.IsTrue(mockTag.Posts[i].Id == tag.Posts[i].Id);
+                Assert.IsTrue(mockTag.Posts[i].Title == tag.Posts[i].Title);
+                Assert.IsTrue(mockTag.Posts[i].Text == tag.Posts[i].Text);
+            }
 
         }
 

@@ -61,6 +61,7 @@ namespace Magicianred.LearnByDoing.MyBlog.BL.Tests.Unit.Services
             }
         }
 
+
         [TestCase(1)]
         [TestCase(2)]
         [Category("Unit test")]
@@ -79,6 +80,30 @@ namespace Magicianred.LearnByDoing.MyBlog.BL.Tests.Unit.Services
             Assert.IsNotNull(post);
             Assert.IsTrue(post.Id == id);
         }
+
+
+        [TestCase("Tom")]
+        [TestCase("Jim")]
+        public void should_retrieve_all_posts_by_author(string author)
+        {
+            // Arrange
+            var mockPosts = PostsHelper.GetDefaultMockData();
+            _postsRepository.GetAllByAuthor(author).Returns(mockPosts);
+
+            // Act
+            var posts = _sut.GetAllByAuthor(author);
+            var postsList = posts.ToList();
+            // Assert
+            Assert.IsNotNull(posts);
+            Assert.AreEqual(posts.Count, mockPosts.Count);
+            for (var i = 0; i < mockPosts.Count; i++)
+            {
+                var mockPost = mockPosts[0];
+                var post = postsList[0];
+                Assert.IsTrue(mockPost.Author == post.Author);
+            }
+        }
+
 
         [Test]
         [Category("Unit test")]

@@ -35,7 +35,11 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
             using (var connection = _connectionFactory.GetConnection())
             {
                 // TOP 1 is not a command for SQLite, remove
-                tag = connection.QueryFirstOrDefault<Tag>("SELECT * FROM tags WHERE Id = @TagId", new { TagId = id });
+                tag = connection.QueryFirstOrDefault<Tag>("SELECT Id, Name, Description FROM Tags WHERE Id = @TagId", new { TagId = id });
+                if (tag != null)
+                {
+                    tag.Posts = connection.Query<Post>("SELECT c.Id, c.Title, c.Text, c.Author FROM Tags a INNER JOIN Posttags b on a.Id = b.TagId INNER JOIN Posts c on b.PostId = c.Id WHERE a.Id = @TagId", new { TagId = id }).AsList<Post>();
+                }
             }
             return tag;
         }

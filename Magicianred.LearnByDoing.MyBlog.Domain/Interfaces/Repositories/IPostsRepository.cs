@@ -9,5 +9,6 @@ namespace Magicianred.LearnByDoing.MyBlog.Domain.Interfaces.Repositories
     {
         public IEnumerable<Post> GetAll();
         Post GetById(int id);
+        public IEnumerable<Post> GetAllByAuthor(string author);
     }
 }
