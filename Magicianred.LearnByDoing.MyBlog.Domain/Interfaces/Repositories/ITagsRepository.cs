@@ -9,5 +9,7 @@ namespace Magicianred.LearnByDoing.MyBlog.Domain.Interfaces.Repositories
     {
         public IEnumerable<Tag> GetAll();
         public Tag GetById(int id);
+        public IEnumerable<Tag> GetPaginatedAll(int page, int pageSize);
+
     }
 }

@@ -28,6 +28,22 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
             }
             return tags;
         }
+        public IEnumerable<Tag> GetPaginatedAll(int page, int pageSize)
+        {
+            int skip = 0;
+            if (page <= 0)
+            {
+                page = 1;
+            }
+            page--;
+            skip = page * pageSize;
+            IEnumerable<Tag> tags = null;
+            using (var connection = _connectionFactory.GetConnection())
+            {
+                tags = connection.Query<Tag>("SELECT Id, Name, Description FROM Tags ORDER BY CreateDate DESC LIMIT @offset,@pageSize", new { offset = skip, pageSize = pageSize });
+            }
+            return tags;
+        }
 
         public Tag GetById(int id)
         {

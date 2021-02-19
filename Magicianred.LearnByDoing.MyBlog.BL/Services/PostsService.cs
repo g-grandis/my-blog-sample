@@ -47,6 +47,10 @@ namespace Magicianred.LearnByDoing.MyBlog.BL.Services
         {
             return _postsRepository.GetAllByAuthor(author).ToList();
         }
+        public List<Post> GetPaginatedAll(int page,int pageSize)
+        {
+            return _postsRepository.GetPaginatedAll(page,pageSize).ToList();
+        }
 
     }
 }

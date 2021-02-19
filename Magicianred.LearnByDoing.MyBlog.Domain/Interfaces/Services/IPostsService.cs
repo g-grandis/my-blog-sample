@@ -10,5 +10,6 @@ namespace Magicianred.LearnByDoing.MyBlog.Domain.Interfaces.Services
         public List<Post> GetAll();
         public Post GetById(int id);
         public List<Post> GetAllByAuthor(string author);
+        public List<Post> GetPaginatedAll(int page, int pageSize);
     }
 }

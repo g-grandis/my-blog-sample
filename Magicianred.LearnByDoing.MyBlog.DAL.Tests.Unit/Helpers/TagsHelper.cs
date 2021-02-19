@@ -24,6 +24,35 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Helpers
             });
             return mockTags;
         }
+        public static List<Tag> GetPaginatedDefaultMockData()
+        {
+            List<Tag> mockTags = new List<Tag>();
+            mockTags.Add(new Tag()
+            {
+                Id = 1,
+                Name = "This is a name for tag 1",
+                Description = "This is a description for tag 1"
+            });
+            mockTags.Add(new Tag()
+            {
+                Id = 2,
+                Name = "This is a name for tag 2",
+                Description = "This is a description for tag 2"
+            });
+            mockTags.Add(new Tag()
+            {
+                Id = 3,
+                Name = "This is a name for tag 3",
+                Description = "This is a description for tag 3"
+            });
+            mockTags.Add(new Tag()
+            {
+                Id = 4,
+                Name = "This is a name for tag 4",
+                Description = "This is a description for tag 4"
+            });
+            return mockTags;
+        }
         public static List<Tag> GetMockDataWithPosts(List<Post> mockPosts)
         {
             List<Tag> mockTags = TagsHelper.GetDefaultMockData();

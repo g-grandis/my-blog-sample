@@ -28,5 +28,9 @@ namespace Magicianred.LearnByDoing.MyBlog.BL.Services
         {
             return _categoriesRepository.GetById(id);
         }
+        public List<Category> GetPaginatedAll(int page, int pageSize)
+        {
+            return _categoriesRepository.GetPaginatedAll(page, pageSize).ToList();
+        }
     }
 }

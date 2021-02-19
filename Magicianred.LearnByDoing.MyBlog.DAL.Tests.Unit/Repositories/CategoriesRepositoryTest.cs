@@ -69,6 +69,33 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
             }
         }
 
+
+        [TestCase(1, 3)]
+        [TestCase(2, 3)]
+        [TestCase(0, 3)]
+        [TestCase(3, 3)]
+        [Category("Unit test")]
+        public void should_retrieve_all_paginated_posts(int page, int pageSize)
+        {
+            // Arrange
+            var mockCategories = CategoriesHelper.GetPaginatedDefaultMockData();
+            var db = new InMemoryDatabase();
+            db.Insert<Category>(mockCategories);
+
+            _connectionFactory.GetConnection().Returns(db.OpenConnection());
+
+
+            // Act
+            var categories = _sut.GetPaginatedAll(page, pageSize);
+            var postsList = categories.ToList();
+
+            // Assert
+            Assert.IsNotNull(categories);
+
+            Assert.IsTrue(categories.Count() <= pageSize, "Categories are more than pageSize! Error");
+
+        }
+
         [TestCase(1)]
         [TestCase(2)]
         [Category("Unit test")]

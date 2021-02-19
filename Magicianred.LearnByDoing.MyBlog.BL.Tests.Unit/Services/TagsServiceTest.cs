@@ -63,6 +63,28 @@ namespace Magicianred.LearnByDoing.MyBlog.BL.Tests.Unit.Services
                 mockTags.Remove(tag);
             }
         }
+        [TestCase(1, 3)]
+        [TestCase(2, 3)]
+        [TestCase(0, 3)]
+        [TestCase(3, 3)]
+        [Category("Unit test")]
+        public void should_retrieve_all_paginated_tags(int page, int pageSize)
+        {
+            // Arrange
+            var mockTags = TagsHelper.GetPaginatedDefaultMockData();
+            _tagsRepository.GetAll().Returns(mockTags);
+
+
+            // Act
+            var tags = _sut.GetPaginatedAll(page, pageSize);
+            var tagsList = tags.ToList();
+
+            // Assert
+            Assert.IsNotNull(tags);
+
+            Assert.IsTrue(tags.Count() <= pageSize, "Tags are more than pageSize! Error");
+
+        }
 
         [TestCase(1)]
         [TestCase(2)]

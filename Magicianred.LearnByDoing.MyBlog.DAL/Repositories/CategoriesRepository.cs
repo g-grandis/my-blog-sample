@@ -37,6 +37,22 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
             return categories;
         }
 
+        public IEnumerable<Category> GetPaginatedAll(int page, int pageSize)
+        {
+            int skip = 0;
+            if (page <= 0)
+            {
+                page = 1;
+            }
+            page--;
+            skip = page * pageSize;
+            IEnumerable<Category> categories = null;
+            using (var connection = _connectionFactory.GetConnection())
+            {
+                categories = connection.Query<Category>("SELECT Id, Name, Description FROM Categories ORDER BY CreateDate DESC LIMIT @offset,@pageSize", new { offset = skip, pageSize = pageSize });
+            }
+            return categories;
+        }
         /// <summary>
         /// Retrieve post by own id
         /// </summary>

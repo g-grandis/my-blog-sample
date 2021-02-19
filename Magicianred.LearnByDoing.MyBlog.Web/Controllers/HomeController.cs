@@ -40,17 +40,25 @@ namespace Magicianred.LearnByDoing.MyBlog.Web.Controllers
         /// GET: <HomeController>
         /// </summary>
         /// <returns>list of Posts</returns>
-        public IActionResult Index(string author = null)
+        public IActionResult Index(int page = 1, int pageSize = 3,string author = null)
         {
 
             if (!String.IsNullOrWhiteSpace(author))
             {
                 var posts = _postsService.GetAllByAuthor(author);
-                 return View(posts);
+                ViewBag.CurrentPage = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.IsFirst = ((int)ViewBag.CurrentPage > 1);
+                ViewBag.IsLast = (posts.Count >= (int)ViewBag.PageSize);
+                return View(posts);
             }
             else
             {
-                var posts = _postsService.GetAll();
+                var posts = _postsService.GetPaginatedAll(page,pageSize);
+                ViewBag.CurrentPage = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.IsFirst = ((int)ViewBag.CurrentPage > 1);
+                ViewBag.IsLast = (posts.Count >= (int)ViewBag.PageSize);
                 return View(posts);
             }
             
@@ -68,9 +76,13 @@ namespace Magicianred.LearnByDoing.MyBlog.Web.Controllers
             return View(post);
         }
         
-        public IActionResult Categories()
+        public IActionResult Categories(int page = 1, int pageSize = 3)
         {
             var categories = _categoriesService.GetAll();
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.IsFirst = ((int)ViewBag.CurrentPage > 1);
+            ViewBag.IsLast = (categories.Count >= (int)ViewBag.PageSize);
             return View(categories);
         }
         public IActionResult Category(int id)
@@ -79,9 +91,13 @@ namespace Magicianred.LearnByDoing.MyBlog.Web.Controllers
             return View(category);
         }
 
-        public IActionResult Tags()
+        public IActionResult Tags(int page = 1, int pageSize = 3)
         {
             var tags = _tagsService.GetAll();
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.IsFirst = ((int)ViewBag.CurrentPage > 1);
+            ViewBag.IsLast = (tags.Count >= (int)ViewBag.PageSize);
             return View(tags);
         }
         public IActionResult Tag(int id)
