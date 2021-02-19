@@ -78,7 +78,7 @@ namespace Magicianred.LearnByDoing.MyBlog.Web.Controllers
         
         public IActionResult Categories(int page = 1, int pageSize = 3)
         {
-            var categories = _categoriesService.GetAll();
+            var categories = _categoriesService.GetPaginatedAll(page, pageSize);
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
             ViewBag.IsFirst = ((int)ViewBag.CurrentPage > 1);
@@ -93,7 +93,7 @@ namespace Magicianred.LearnByDoing.MyBlog.Web.Controllers
 
         public IActionResult Tags(int page = 1, int pageSize = 3)
         {
-            var tags = _tagsService.GetAll();
+            var tags = _tagsService.GetPaginatedAll(page, pageSize);
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
             ViewBag.IsFirst = ((int)ViewBag.CurrentPage > 1);
