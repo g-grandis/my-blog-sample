@@ -13,14 +13,18 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
     public class CategoriesRepository : ICategoriesRepository
     {
         private readonly IDatabaseConnectionFactory _connectionFactory;
+        private readonly IConfiguration _configuration;
+
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="configuration"></param>
-        public CategoriesRepository(IDatabaseConnectionFactory connectionFactory)
+        public CategoriesRepository(IDatabaseConnectionFactory connectionFactory, IConfiguration configuration)
         {
             this._connectionFactory = connectionFactory;
+            this._configuration = configuration;
+
         }
 
         /// <summary>
@@ -49,7 +53,17 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
             IEnumerable<Category> categories = null;
             using (var connection = _connectionFactory.GetConnection())
             {
-                categories = connection.Query<Category>("SELECT Id, Name, Description FROM Categories ORDER BY CreateDate DESC LIMIT @offset,@pageSize", new { offset = skip, pageSize = pageSize });
+                var databaseType = _configuration.GetSection("DatabaseType").Value;
+                if (!string.IsNullOrWhiteSpace(databaseType) && databaseType.ToLower().Trim() == "mysql")
+                {
+                    categories = connection.Query<Category>("SELECT Id, Name, Description FROM Categories ORDER BY CreateDate DESC LIMIT @offset, @pageSize ",
+                        new { offset = skip, pageSize = pageSize });
+                }
+                else // MSSQL DB
+                {
+                    categories = connection.Query<Category>("SELECT Id, Name, Description FROM Categories ORDER BY CreateDate DESC OFFSET @offset ROWS FETCH NEXT @PageSize ROWS ONLY",
+                            new { offset = skip, pageSize = pageSize });
+                }
             }
             return categories;
         }

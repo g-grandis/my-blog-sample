@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
 {
@@ -16,7 +17,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
     {
 
         private TagsRepository _sut;
-
+        private IConfiguration _configuration;
         private IDatabaseConnectionFactory _connectionFactory;
 
 
@@ -26,8 +27,9 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
         public void SetupUpOneTime()
         {
             // Instance of mock
+            _configuration = Substitute.For<IConfiguration>();
             _connectionFactory = Substitute.For<IDatabaseConnectionFactory>();
-            _sut = new TagsRepository(_connectionFactory);
+            _sut = new TagsRepository(_connectionFactory, _configuration);
         }
 
         [OneTimeTearDown]
@@ -85,7 +87,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
             db.Insert<Tag>(mockTags);
 
             _connectionFactory.GetConnection().Returns(db.OpenConnection());
-
+            _configuration.GetSection("DatabaseType").Value.Returns("mysql");
 
             // Act
             var tags = _sut.GetPaginatedAll(page, pageSize);

@@ -14,10 +14,12 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
     public class TagsRepository : ITagsRepository
     {
         private readonly IDatabaseConnectionFactory _connectionFactory;
+        private readonly IConfiguration _configuration;
 
-        public TagsRepository(IDatabaseConnectionFactory connectionFactory)
+        public TagsRepository(IDatabaseConnectionFactory connectionFactory, IConfiguration configuration)
         {
             this._connectionFactory = connectionFactory;
+            this._configuration = configuration;
         }
         public IEnumerable<Tag> GetAll()
         {
@@ -40,7 +42,17 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
             IEnumerable<Tag> tags = null;
             using (var connection = _connectionFactory.GetConnection())
             {
-                tags = connection.Query<Tag>("SELECT Id, Name, Description FROM Tags ORDER BY CreateDate DESC LIMIT @offset,@pageSize", new { offset = skip, pageSize = pageSize });
+                var databaseType = _configuration.GetSection("DatabaseType").Value;
+                if (!string.IsNullOrWhiteSpace(databaseType) && databaseType.ToLower().Trim() == "mysql")
+                {
+                    tags = connection.Query<Tag>("SELECT Id, Name, Description FROM Tags ORDER BY CreateDate  DESC LIMIT @offset, @pageSize ",
+                        new { offset = skip, pageSize = pageSize });
+                }
+                else // MSSQL DB
+                {
+                    tags = connection.Query<Tag>("SELECT Id, Name, Description FROM Tags ORDER BY CreateDate DESC OFFSET @offset ROWS FETCH NEXT @PageSize ROWS ONLY",
+                            new { offset = skip, pageSize = pageSize });
+                }
             }
             return tags;
         }

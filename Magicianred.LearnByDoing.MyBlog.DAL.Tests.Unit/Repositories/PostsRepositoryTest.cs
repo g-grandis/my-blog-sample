@@ -6,6 +6,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
 {
@@ -16,7 +17,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
         /// PostsService is our System Under Test
         /// </summary>
         private PostsRepository _sut;
-
+        private IConfiguration _configuration;
         private IDatabaseConnectionFactory _connectionFactory;
 
 
@@ -26,8 +27,9 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
         public void SetupUpOneTime()
         {
             // Instance of mock
+            _configuration = Substitute.For<IConfiguration>();
             _connectionFactory = Substitute.For<IDatabaseConnectionFactory>();
-            _sut = new PostsRepository(_connectionFactory);
+            _sut = new PostsRepository(_connectionFactory, _configuration);
         }
 
         [OneTimeTearDown]
@@ -90,7 +92,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
             db.Insert<Post>(mockPosts);
 
             _connectionFactory.GetConnection().Returns(db.OpenConnection());
-
+            _configuration.GetSection("DatabaseType").Value.Returns("mysql");
 
             // Act
             var posts = _sut.GetPaginatedAll(page,pageSize);

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using NSubstitute;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
 {
@@ -15,7 +16,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
     public class CategoriesRepositoryTest
     {
         private CategoriesRepository _sut;
-
+        private IConfiguration _configuration;
         private IDatabaseConnectionFactory _connectionFactory;
 
 
@@ -25,8 +26,9 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
         public void SetupUpOneTime()
         {
             // Instance of mock
+            _configuration = Substitute.For<IConfiguration>();
             _connectionFactory = Substitute.For<IDatabaseConnectionFactory>();
-            _sut = new CategoriesRepository(_connectionFactory);
+            _sut = new CategoriesRepository(_connectionFactory, _configuration);
         }
 
         [OneTimeTearDown]
@@ -83,7 +85,7 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Tests.Unit.Repositories
             db.Insert<Category>(mockCategories);
 
             _connectionFactory.GetConnection().Returns(db.OpenConnection());
-
+            _configuration.GetSection("DatabaseType").Value.Returns("mysql");
 
             // Act
             var categories = _sut.GetPaginatedAll(page, pageSize);

@@ -16,14 +16,18 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
     public class PostsRepository : IPostsRepository
     {
         private readonly IDatabaseConnectionFactory _connectionFactory;
+        private readonly IConfiguration _configuration;
+
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="configuration"></param>
-        public PostsRepository(IDatabaseConnectionFactory connectionFactory)
+        public PostsRepository(IDatabaseConnectionFactory connectionFactory, IConfiguration configuration)
         {
             this._connectionFactory = connectionFactory;
+            this._configuration = configuration;
+
         }
 
         /// <summary>
@@ -52,7 +56,19 @@ namespace Magicianred.LearnByDoing.MyBlog.DAL.Repositories
             IEnumerable<Post> posts = null;
             using (var connection = _connectionFactory.GetConnection())
             {
-                posts = connection.Query<Post>("SELECT Id, Title, Text, Author FROM Posts ORDER BY CreateDate DESC LIMIT @offset,@pageSize", new { offset = skip, pageSize = pageSize });
+                var databaseType = _configuration.GetSection("DatabaseType").Value;
+                if (!string.IsNullOrWhiteSpace(databaseType) && databaseType.ToLower().Trim() == "mysql")
+                {
+                    posts = connection.Query<Post>(
+                        "SELECT Id, Title, Text, Author FROM Posts ORDER BY CreateDate DESC LIMIT @offset, @pageSize ",
+                        new { offset = skip, pageSize = pageSize });
+                }
+                else // if (!string.IsNullOrWhiteSpace(databaseType) && databaseType.ToLower().Trim() == "mssql")
+                {
+                    posts = connection.Query<Post>(
+                            "SELECT Id, Title, Text, Author FROM Posts ORDER BY CreateDate DESC OFFSET @offset ROWS FETCH NEXT @PageSize ROWS ONLY",
+                            new { offset = skip, pageSize = pageSize });
+                }
             }
             return posts;
         }
